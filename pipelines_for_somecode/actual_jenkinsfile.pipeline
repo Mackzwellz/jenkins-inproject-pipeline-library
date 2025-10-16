@@ -33,7 +33,10 @@ pipeline {
                 script {
                     println("-- execute start")
                     def localLib = libraryFromLocalRepo().shared_lib_name
+                    println(libraryFromLocalRepo())
+                    println(localLib)
                     println("-- lib loaded")
+                    println(localLib.common_steps.new(this).commonStep())
                     println(localLib.common_steps.commonStep())
                     println(localLib.less_common_steps.lessCommonStep())
                     println("-- steps loaded")
@@ -57,12 +60,14 @@ def libraryFromLocalRepo1() {
 }
 
 // https://github.com/jenkinsci/workflow-cps-global-lib-plugin/pull/101
+// https://www.jenkins.io/doc/pipeline/steps/pipeline-groovy-lib/
 // def localLib = libraryFromLocalRepo().shared_lib_name
 // localLib.common_steps.commonStep()
 // localLib.less_common_steps.lessCommonStep()
 // less_global_env()
 def libraryFromLocalRepo() {
-    library(identifier: "shared_lib_name@${params.PIPELINE_BRANCH}", retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
+    library(identifier: "shared_lib_name@${params.PIPELINE_BRANCH}",
+            retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
 }
 
 
