@@ -1,0 +1,45 @@
+pipeline {
+// general approach?
+// https://stackoverflow.com/questions/46213913/load-jenkins-pipeline-shared-library-from-same-repository
+
+    agent any
+
+    parameters {
+        string defaultValue: 'https://git.repo.url', name: 'REPO_URL', trim: true
+        gitParameter branch: '', branchFilter: '.*', defaultValue: 'develop', name: 'CODE_BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
+        gitParameter branch: '', branchFilter: '.*', defaultValue: 'develop', name: 'PIPELINE_BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
+    }
+    stages {
+        stage("Checkout") {
+            steps {
+                //git branch: 'develop', url: '${REPO_URL}'
+                checkout scmGit(branches: [[name: '*/${CODE_BRANCH}']], extensions: [], userRemoteConfigs: [[url: '${REPO_URL}']])
+            }
+        }
+        stage("Execute") {
+            steps {
+                script {
+                    System.out.println("execute")
+                    System.out.println(globalEnv())
+                    System.out.println(commonStep())
+                    System.out.println(lessGlobalEnv())
+                    System.out.println(lessCommonStep())
+                }
+            }
+        }
+    }
+}
+
+def libraryFromLocalRepo1() {
+    // Workaround for loading the current repo as shared build lib.
+    // Checks out to workspace local folder named like the identifier.
+    // We have to pass an identifier with version (which is ignored). Otherwise the build fails.
+    library(identifier: 'ces-build-lib@snapshot', retriever: legacySCM(scm))
+}
+
+def libraryFromLocalRepo() {
+    // https://github.com/jenkinsci/workflow-cps-global-lib-plugin/pull/101
+    library(identifier: 'shared_lib_name@${PIPELINE_BRANCH}', retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
+}
+
+

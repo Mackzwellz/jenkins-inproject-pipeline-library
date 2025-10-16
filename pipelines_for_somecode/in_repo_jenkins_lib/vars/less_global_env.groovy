@@ -1,0 +1,4 @@
+
+def lessGlobalEnv() {
+    return "lessGlobalEnv"
+}
