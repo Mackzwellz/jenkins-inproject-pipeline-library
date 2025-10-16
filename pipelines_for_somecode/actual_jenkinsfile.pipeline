@@ -9,11 +9,12 @@ pipeline {
         gitParameter branch: '', branchFilter: '.*', defaultValue: 'develop', name: 'CODE_BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
         gitParameter branch: '', branchFilter: '.*', defaultValue: 'develop', name: 'PIPELINE_BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
     }
+
     stages {
         stage("Checkout") {
             steps {
                 //git branch: 'develop', url: '${REPO_URL}'
-                checkout scmGit(branches: [[name: '*/${CODE_BRANCH}']], extensions: [], userRemoteConfigs: [[url: '${REPO_URL}']])
+                checkout scmGit(branches: [[name: '*/${params.CODE_BRANCH}']], extensions: [], userRemoteConfigs: [[url: '${params.REPO_URL}']])
             }
         }
         stage("Execute") {
