@@ -1,6 +1,6 @@
 pipeline {
-// general approach?
 // https://stackoverflow.com/questions/46213913/load-jenkins-pipeline-shared-library-from-same-repository
+// https://medium.com/@AndrzejRehmann/private-jenkins-shared-libraries-540abe7a0ab7
 
     agent any
 
@@ -37,8 +37,8 @@ pipeline {
                     println(localLib.common_steps.commonStep())
                     println(localLib.less_common_steps.lessCommonStep())
                     println("-- steps loaded")
-                    println(globalEnv())
                     println(lessGlobalEnv())
+                    println(globalEnv())
                     println("-- envs loaded")
                 }
             }
@@ -60,8 +60,9 @@ def libraryFromLocalRepo1() {
 // def localLib = libraryFromLocalRepo().shared_lib_name
 // localLib.common_steps.commonStep()
 // localLib.less_common_steps.lessCommonStep()
+// less_global_env()
 def libraryFromLocalRepo() {
-    library(identifier: 'shared_lib_name@${PIPELINE_BRANCH}', retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
+    library(identifier: "shared_lib_name@${params.PIPELINE_BRANCH}", retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
 }
 
 
