@@ -13,12 +13,14 @@ pipeline {
     stages {
         stage("Checkout") {
             steps {
+                cleanWs()
                 println("-- execute start")
                 println("${params.REPO_URL}")
                 println("${params.CODE_BRANCH}")
                 println("${params.PIPELINE_BRANCH}")
-                //git branch: "*/{$params.CODE_BRANCH}", url: "${params.REPO_URL}"
-                checkout scmGit(branches: [[name: "*/{$params.CODE_BRANCH}"]], extensions: [], userRemoteConfigs: [[url: "${params.REPO_URL}"]])
+                git branch: "*/{$params.CODE_BRANCH}", url: "${params.REPO_URL}"
+                //git branch: 'develop', url: 'https://github.com/Mackzwellz/jenkins-inproject-pipeline-library.git'
+                //checkout scmGit(branches: [[name: "*/{$params.CODE_BRANCH}"]], extensions: [], userRemoteConfigs: [[url: "${params.REPO_URL}"]])
             }
         }
         stage("Execute") {
