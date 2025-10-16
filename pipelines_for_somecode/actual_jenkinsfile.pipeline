@@ -19,17 +19,24 @@ pipeline {
         stage("Execute") {
             steps {
                 script {
-                    System.out.println("execute")
-                    System.out.println(globalEnv())
-                    System.out.println(commonStep())
-                    System.out.println(lessGlobalEnv())
-                    System.out.println(lessCommonStep())
+                    println("-- execute start")
+                    def localLib = libraryFromLocalRepo().shared_lib_name
+                    println("-- lib loaded")
+                    println(localLib.common_steps.commonStep())
+                    println(localLib.less_common_steps.lessCommonStep())
+                    println("-- steps loaded")
+                    println(globalEnv())
+                    println(lessGlobalEnv())
+                    println("-- envs loaded")
                 }
             }
         }
     }
 }
 
+// https://github.com/cloudogu/ces-build-lib/blob/develop/Jenkinsfile
+// def cesBuildLib = libraryFromLocalRepo().com.cloudogu.ces.cesbuildlib
+// def mvn = cesBuildLib.MavenWrapperInDocker.new(this, 'eclipse-temurin:11.0.25_9-jdk-alpine')
 def libraryFromLocalRepo1() {
     // Workaround for loading the current repo as shared build lib.
     // Checks out to workspace local folder named like the identifier.
@@ -37,8 +44,11 @@ def libraryFromLocalRepo1() {
     library(identifier: 'ces-build-lib@snapshot', retriever: legacySCM(scm))
 }
 
+// https://github.com/jenkinsci/workflow-cps-global-lib-plugin/pull/101
+// def localLib = libraryFromLocalRepo().shared_lib_name
+// localLib.common_steps.commonStep()
+// localLib.less_common_steps.lessCommonStep()
 def libraryFromLocalRepo() {
-    // https://github.com/jenkinsci/workflow-cps-global-lib-plugin/pull/101
     library(identifier: 'shared_lib_name@${PIPELINE_BRANCH}', retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
 }
 
