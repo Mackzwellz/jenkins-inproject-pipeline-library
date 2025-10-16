@@ -1,0 +1,60 @@
+// TODO explore this
+// https://plugins.jenkins.io/job-dsl/
+// https://plugins.jenkins.io/configuration-as-code
+// https://stackoverflow.com/questions/70248632/jenkins-pipelinejob-with-scm-and-static-script
+// https://stackoverflow.com/questions/46963722/jenkins-dsl-script-lightweight-checkout-not-working
+// https://jenkinsci.github.io/job-dsl-plugin/#path/pipelineJob
+// https://jenkinsci.github.io/job-dsl-plugin/#method/javaposse.jobdsl.dsl.helpers.workflow.WorkflowDefinitionContext.cpsScm
+
+pipelineJob("bootstrapper") {
+    logRotator {
+        numToKeep(50)
+    }
+
+//    definition {
+//        cps {
+//            script('''
+//                        pipeline { // <code here> }
+//                    ''')
+//
+//        }
+//    }
+
+    definition {
+        cpsScmFlowDefinition {
+            scm {
+                gitSCM {
+                    userRemoteConfigs {
+                        userRemoteConfig {
+//                            credentialsId('')
+//                            name('')
+//                            refspec('')
+                            url('https://github.com/Mackzwellz/jenkins-inproject-pipeline-library')
+                        }
+                    }
+                    branches {
+                        branchSpec {
+                            name('develop')
+                        }
+                    }
+//                    extensions {
+//                        cleanBeforeCheckout()
+//                        localBranch {
+//                            localBranch('')
+//                        }
+//                    }
+//                    doGenerateSubmoduleConfigurations(false)
+                    browser {
+                        gitWeb {
+                            repoUrl('https://github.com/Mackzwellz/jenkins-inproject-pipeline-library')
+                        }
+                    }
+//                   gitTool('')
+                }
+            }
+            scriptPath('pipelines_for_somecode/actual_jenkinsfile.pipeline')
+            lightweight(true)
+        }
+    }
+
+}
