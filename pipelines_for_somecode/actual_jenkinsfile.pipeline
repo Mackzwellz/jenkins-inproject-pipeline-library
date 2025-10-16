@@ -6,12 +6,12 @@ pipeline {
 
     parameters {
         string defaultValue: 'https://github.com/Mackzwellz/jenkins-inproject-pipeline-library.git', name: 'REPO_URL', trim: true
-        string defaultValue: 'origin/develop', name: 'CODE_BRANCH', trim: true
-        string defaultValue: 'origin/develop', name: 'PIPELINE_BRANCH', trim: true
-//        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'origin/develop', name: 'CODE_BRANCH',
+        string defaultValue: 'develop', name: 'CODE_BRANCH', trim: true
+        string defaultValue: 'develop', name: 'PIPELINE_BRANCH', trim: true
+//        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'CODE_BRANCH',
 //                quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART',
 //                type: 'PT_BRANCH', useRepository: "${params.REPO_URL}"
-//        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'origin/develop', name: 'PIPELINE_BRANCH',
+//        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'PIPELINE_BRANCH',
 //                quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART',
 //                type: 'PT_BRANCH',  useRepository: "${params.REPO_URL}"
     }
@@ -36,12 +36,12 @@ pipeline {
                     println(libraryFromLocalRepo())
                     println(localLib)
                     println("-- lib loaded")
-                    println(localLib.common_steps.new(this).commonStep())
-                    println(localLib.common_steps.commonStep())
-                    println(localLib.less_common_steps.lessCommonStep())
+                    //println(tryCatch(localLib.common_steps.new(this).commonStep()))
+                    println(tryCatch(localLib.common_steps.commonStep()))
+                    println(tryCatch(localLib.less_common_steps.lessCommonStep()))
                     println("-- steps loaded")
-                    println(lessGlobalEnv())
-                    println(globalEnv())
+                    println(tryCatch(lessGlobalEnv()))
+                    println(tryCatch(globalEnv()))
                     println("-- envs loaded")
                 }
             }
@@ -70,4 +70,11 @@ def libraryFromLocalRepo() {
             retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
 }
 
+def tryCatch(Closure closure) {
+    try {
+        closure.run()
+    } catch (Exception e) {
+        println(e)
+    }
+}
 
