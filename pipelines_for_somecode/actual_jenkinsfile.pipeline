@@ -6,12 +6,14 @@ pipeline {
 
     parameters {
         string defaultValue: 'https://github.com/Mackzwellz/jenkins-inproject-pipeline-library.git', name: 'REPO_URL', trim: true
-        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'CODE_BRANCH',
-                quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART',
-                type: 'PT_BRANCH', useRepository: "${params.REPO_URL}"
-        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'develop', name: 'PIPELINE_BRANCH',
-                quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART',
-                type: 'PT_BRANCH',  useRepository: "${params.REPO_URL}"
+        string defaultValue: 'origin/develop', name: 'CODE_BRANCH', trim: true
+        string defaultValue: 'origin/develop', name: 'PIPELINE_BRANCH', trim: true
+//        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'origin/develop', name: 'CODE_BRANCH',
+//                quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART',
+//                type: 'PT_BRANCH', useRepository: "${params.REPO_URL}"
+//        gitParameter branch: '', branchFilter: 'origin/(.*)', defaultValue: 'origin/develop', name: 'PIPELINE_BRANCH',
+//                quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'DESCENDING_SMART',
+//                type: 'PT_BRANCH',  useRepository: "${params.REPO_URL}"
     }
 
     stages {
@@ -22,7 +24,7 @@ pipeline {
                 println("${params.REPO_URL}")
                 println("${params.CODE_BRANCH}")
                 println("${params.PIPELINE_BRANCH}")
-                git branch: "*/${params.CODE_BRANCH}", url: "${params.REPO_URL}"
+                git branch: "${params.CODE_BRANCH}", url: "${params.REPO_URL}"
                 //checkout scmGit(branches: [[name: "*/${params.CODE_BRANCH}"]], extensions: [], userRemoteConfigs: [[url: "${params.REPO_URL}"]])
             }
         }
