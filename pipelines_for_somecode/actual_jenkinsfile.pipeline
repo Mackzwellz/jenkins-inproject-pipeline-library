@@ -36,11 +36,12 @@ pipeline {
                     println(libraryFromLocalRepo())
                     println(localLib)
                     println("-- lib loaded")
-                    tryCatch(localLib.common_steps.new(this).commonStep())
-                    println(tryCatch(localLib.common_steps.commonStep()))
-                    println(tryCatch(localLib.less_common_steps.lessCommonStep()))
-                    println("-- steps loaded")
-                    println(tryCatch(lessGlobalEnv()))
+                    //tryCatch(localLib.common_steps.new(this).commonStep())
+                    //println(tryCatch(localLib.common_steps.commonStep()))
+                    //println(tryCatch(localLib.less_common_steps.lessCommonStep()))
+                    //println("-- steps loaded")
+                    println(tryCatch(lessGlobalEnv())) //step
+                    println(tryCatch(less_global_env.lessGlobalEnv())) //method
                     println(tryCatch(globalEnv()))
                     println("-- envs loaded")
                 }
@@ -60,8 +61,9 @@ def libraryFromLocalRepo1() {
     library(identifier: 'ces-build-lib@snapshot', retriever: legacySCM(scm))
 }
 
+// https://www.jenkins.io/doc/book/pipeline/shared-libraries
+// https://www.jenkins.io/doc/pipeline/steps/pipeline-groovy-lib
 // https://github.com/jenkinsci/workflow-cps-global-lib-plugin/pull/101
-// https://www.jenkins.io/doc/pipeline/steps/pipeline-groovy-lib/
 // def localLib = libraryFromLocalRepo().shared_lib_name
 // localLib.common_steps.commonStep()
 // localLib.less_common_steps.lessCommonStep()
