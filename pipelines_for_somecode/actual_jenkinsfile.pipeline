@@ -36,7 +36,7 @@ pipeline {
                     println(libraryFromLocalRepo())
                     println(localLib)
                     println("-- lib loaded")
-                    //println(tryCatch(localLib.common_steps.new(this).commonStep()))
+                    tryCatch(localLib.common_steps.new(this).commonStep())
                     println(tryCatch(localLib.common_steps.commonStep()))
                     println(tryCatch(localLib.less_common_steps.lessCommonStep()))
                     println("-- steps loaded")
@@ -49,6 +49,7 @@ pipeline {
     }
 }
 
+//https://github.com/syndesisio/syndesis-pipeline-library/blob/master/Jenkinsfile
 // https://github.com/cloudogu/ces-build-lib/blob/develop/Jenkinsfile
 // def cesBuildLib = libraryFromLocalRepo().com.cloudogu.ces.cesbuildlib
 // def mvn = cesBuildLib.MavenWrapperInDocker.new(this, 'eclipse-temurin:11.0.25_9-jdk-alpine')
@@ -66,15 +67,20 @@ def libraryFromLocalRepo1() {
 // localLib.less_common_steps.lessCommonStep()
 // less_global_env()
 def libraryFromLocalRepo() {
-    library(identifier: "shared_lib_name@${params.PIPELINE_BRANCH}",
-            retriever: legacySCM(scm: scm, libraryPath: 'pipelines_for_somecode/in_repo_jenkins_lib'))
+    def topLevelFolderOrRepoName = "in_repo_jenkins_lib"
+    def packageUnderSrc = "shared_lib_name"
+
+    library(identifier: "$topLevelFolderOrRepoName@${params.PIPELINE_BRANCH}",
+            retriever: legacySCM(scm: scm, libraryPath: "pipelines_for_somecode/$topLevelFolderOrRepoName/"))
+            // retriever: legacySCM(scm: filesystem, libraryPath: './pipelines_for_somecode/in_repo_jenkins_lib/src'))
+            // retriever: modernSCM($class: 'GitSCMSource', remote: 'file://./pipelines_for_somecode/in_repo_jenkins_lib'))
+            // retriever: workspaceRetriever("${WORKSPACE}/pipelines_for_somecode/in_repo_jenkins_lib/")
 }
 
 def tryCatch(Closure closure) {
     try {
         closure.run()
-    } catch (Exception e) {
+    } catch (Exception | ClassNotFoundException e) {
         println(e)
     }
 }
-
