@@ -1,6 +1,7 @@
 pipeline {
 // https://stackoverflow.com/questions/46213913/load-jenkins-pipeline-shared-library-from-same-repository
 // https://medium.com/@AndrzejRehmann/private-jenkins-shared-libraries-540abe7a0ab7
+// to debug, checkout from git once then use replay feature
 
     agent any
 
@@ -32,17 +33,22 @@ pipeline {
             steps {
                 script {
                     println("-- execute start")
+                    // these logs mean success:
+//                    Replacing contents of src/shared_lib_name/common_steps.groovy
+//                    Replacing contents of src/shared_lib_name/less_common_steps.groovy
+//                    Replacing contents of vars/global_env.groovy
+//                    Replacing contents of vars/less_global_env.groovy
                     def localLib = libraryFromLocalRepo().shared_lib_name
-                    println(libraryFromLocalRepo())
-                    println(localLib)
+//                    println(libraryFromLocalRepo())
+//                    println(localLib)
                     println("-- lib loaded")
                     //tryCatch(localLib.common_steps.new(this).commonStep())
                     //println(tryCatch(localLib.common_steps.commonStep()))
                     //println(tryCatch(localLib.less_common_steps.lessCommonStep()))
                     //println("-- steps loaded")
-                    println(tryCatch(lessGlobalEnv())) //step
-                    println(tryCatch(less_global_env.lessGlobalEnv())) //method
-                    println(tryCatch(globalEnv()))
+                    tryCatch({ println(lessGlobalEnv('')) }) //step // No such DSL method 'lessGlobalEnv'
+                    tryCatch({ println(less_global_env.lessGlobalEnv()) }) //method <-- works!
+                    tryCatch({ println(globalEnv()) })
                     println("-- envs loaded")
                 }
             }
@@ -74,14 +80,14 @@ def libraryFromLocalRepo() {
 
     library(identifier: "$topLevelFolderOrRepoName@${params.PIPELINE_BRANCH}",
             retriever: legacySCM(scm: scm, libraryPath: "pipelines_for_somecode/$topLevelFolderOrRepoName/"))
-            // retriever: legacySCM(scm: filesystem, libraryPath: './pipelines_for_somecode/in_repo_jenkins_lib/src'))
-            // retriever: modernSCM($class: 'GitSCMSource', remote: 'file://./pipelines_for_somecode/in_repo_jenkins_lib'))
-            // retriever: workspaceRetriever("${WORKSPACE}/pipelines_for_somecode/in_repo_jenkins_lib/")
+    // retriever: legacySCM(scm: filesystem, libraryPath: './pipelines_for_somecode/in_repo_jenkins_lib/src'))
+    // retriever: modernSCM($class: 'GitSCMSource', remote: 'file://./pipelines_for_somecode/in_repo_jenkins_lib'))
+    // retriever: workspaceRetriever("${WORKSPACE}/pipelines_for_somecode/in_repo_jenkins_lib/")
 }
 
 def tryCatch(Closure closure) {
     try {
-        closure.run()
+        closure.call()
     } catch (Exception | ClassNotFoundException e) {
         println(e)
     }

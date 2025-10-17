@@ -1,6 +1,6 @@
 #!/usr/bin/groovy
 
-def call(Map args) {
+def call(String s = '') {
     return lessGlobalEnv()
 }
 
